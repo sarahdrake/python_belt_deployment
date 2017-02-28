@@ -13,12 +13,12 @@ def success(request):
 
     if "id" not in request.session:
         messages.info(request, "Pleaes log in or register")
-        return redirect('/main')
+        return redirect('/')
     try:
         user = User.objects.get(id=request.session["id"])
     except User.DoesNotExist:
         messages.info(request, "User not found. Please register")
-        return redirect('/main')
+        return redirect('/')
     # for displaying on template-- excludes trips that started yesterday or earlier
     my_trips = Trip.objects.filter(members=user).exclude(start__lt=(datetime.now()-timedelta(days=1))).order_by("start")
     other_trips = Trip.objects.all().exclude(members=user).exclude(start__lt=(datetime.now()-timedelta(days=1))).order_by("start")
@@ -27,7 +27,7 @@ def success(request):
 def process(request):
     # this method will use call on REGISTRATION validations made in models and either set session.id to the valid user.id and redirect to home page or return relevant error messages and redirect back home
     if request.method != "POST":
-        return redirect('/main')
+        return redirect('/')
     else:
         user_valid = User.objects.validate(request.POST)
     if user_valid[0] == True:
@@ -36,12 +36,12 @@ def process(request):
     else:
         for msg in user_valid[1]:
             messages.add_message(request, messages.INFO, msg)
-        return redirect('/main')
+        return redirect('/')
 
 def login(request):
     # this method will use call on LOGIN validations made in models and either set session.id to the valid user.id and redirect to home page or return relevant error messages and redirect back home
     if request.method != "POST":
-        return redirect('/main')
+        return redirect('/')
     else:
         user = User.objects.authenticate(request.POST)
         if user[0] == True:
@@ -49,18 +49,18 @@ def login(request):
             return redirect('/travels')
         else:
             messages.add_message(request, messages.INFO, user[1])
-            return redirect('/main')
+            return redirect('/')
 
 def logout(request):
     if "id" in request.session:
         request.session.pop("id")
-    return redirect('/main')
+    return redirect('/')
 
 def addtrip(request):
     # this method is used to make sure that only user.id's that are in session access the corresponding url and RENDER the add trip template
     if "id" not in request.session:
         messages.info(request, "Plese login or register")
-        return redirect('/main')
+        return redirect('/')
     return render(request, 'travel/add.html')
 
 def addprocess(request):
@@ -69,7 +69,7 @@ def addprocess(request):
         return redirect('/travels')
     if "id" not in request.session:
         messages.info(request, "Please log in or register")
-        return redirect('/main')
+        return redirect('/')
     trip_valid = Trip.objects.makeTrip(request.POST, request.session["id"])
     if trip_valid["success"] == True:
         return redirect('/travels/destination/{}'.format(trip_valid["trip_object"].id))
@@ -82,12 +82,12 @@ def destination(request, dest_id):
     # this method will render destination.html. Need to pass through user object (as curr_user), trip object (as destination), another trip object (as members of the trip but excluding the creator username).
     if "id" not in request.session:
         messages.info(request, "Please log in or register")
-        return redirect('/main')
+        return redirect('/')
     try:
         curr_user = User.objects.get(id=request.session["id"])
     except User.DoesNotExist:
         messages.info(reqeust, "Your session has expired. Please log in or register")
-        return redirect('/main')
+        return redirect('/')
     try:
         dest = Trip.objects.get(id=dest_id)
     except Trip.DoesNotExist:
@@ -99,7 +99,7 @@ def destination(request, dest_id):
 def join (request, dest_id):
     if "id" not in request.session:
         messages.info(request, "Please log in or register.")
-        return redirect('/main')
+        return redirect('/')
     try:
         dest = Trip.objects.get(id=dest_id)
     except Trip.DoesNotExist:
@@ -109,7 +109,7 @@ def join (request, dest_id):
         curr_user = User.objects.get(id=request.session["id"])
     except User.DoesNotExist:
         messages.info(reqeust, "Your session has expired. Please log in or register")
-        return redirect('/main')
+        return redirect('/')
 
     valid_join = Trip.objects.joinTrip(request.session["id"], dest_id)
 
