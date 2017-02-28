@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Login and Registration</title>
+  </head>
+  <body>
+    {% if messages %}
+    <ul>
+      {% for msg in messages %}
+      <li>{{msg}}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    <div class="register">
+      <h2>Registration</h2>
+      <form action="/process" method="post">
+        {%csrf_token%}
+        <table>
+          <tbody>
+            <tr>
+              <td>Name:</td>
+              <td><input type="text" name="name"></td>
+            </tr>
+            <tr>
+              <td>Username:</td>
+              <td><input type="text" name="username"></td>
+            </tr>
+            <tr>
+              <td>Password:<br>(8+ characters)</td>
+              <td><input type="password" name="password"></td>
+            </tr>
+            <tr>
+              <td>Confirm Password:</td>
+              <td><input type="password" name="confirm"></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td><input type="submit" value="Register"></td>
+            </tr>
+          </tbody>
+        </table>
+      </form>
+    </div>
+    <div class="login">
+      <h2>Login</h2>
+      <form action="/login" method="post">
+        {%csrf_token%}
+        <table>
+          <tbody>
+            <tr>
+              <td>Username:</td>
+              <td><input type='text' name='username'/></td>
+            </tr>
+            <tr>
+              <td>Password:</td>
+              <td><input type='password' name='password'/></td>
+              <!-- <td><input type='text' name='password' default=''/></td> -->
+            </tr>
+            <tr>
+              <td></td>
+              <td>
+                <input type='submit' class='button' value='Login'/>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </form>
+    </div>
+  </body>
+</html>

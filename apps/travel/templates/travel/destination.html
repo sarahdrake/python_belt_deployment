@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Destination</title>
+  </head>
+  <body>
+    <a href='/travels'>Home</a>
+    <a href='/logout'>Logout</a>
+    <h3>{{dest.destination}}</h3>
+    <p>Planned By: {{dest.creator.name}}</p>
+    <p>Description: {{dest.plan}}</p>
+    <p>Travel Date From: {{dest.start|date:"M d, Y"}}</p>
+    <p>Travel Date To: {{dest.end|date:"M d, Y"}}</p>
+    <h3>Other users joining the trip:</h3>
+    {%for member in members%}
+    <p>{{member.name}}</p>
+    {%empty%}
+    {%if dest.creator.id != request.session.id%}
+    <p>None - click <a href='/travels/join/{{dest.id}}'>here</a> to join!</p>
+    {%else%}
+    <p>None</p>
+    {%endif%}
+    {%endfor%}
+  </body>
+</html>
